@@ -12,9 +12,7 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
         }, options);
         var guid = (function () { function key() { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); } return function () { return key() + key() + '-' + key() + '-' + key() + '-' + key() + '-' + key() + key() + key(); }; })();
         var isNullOrEmpty = function (value) {
-            if ((typeof value == typeof undefined && value == false) || value == '') {
-                return true;
-            }
+            if ((typeof value == typeof undefined && value == false) || value == '') { return true; }
             return false;
         };
         var loadEvent = function (event) {
