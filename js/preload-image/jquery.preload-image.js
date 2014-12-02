@@ -11,6 +11,17 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
             url: ''
         }, options);
         var guid = (function () { function key() { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); } return function () { return key() + key() + '-' + key() + '-' + key() + '-' + key() + '-' + key() + key() + key(); }; })();
+        var isNullOrEmpty = function (value) {
+            if ((typeof value == typeof undefined && value == false) || value == '') {
+                return true;
+            }
+            return false;
+        };
+        var loadEvent = function (event) {
+            $(this).unbind('load', loadEvent);
+            var _element = $("img[for-guid='" + $(this).attr('guid') + "']");
+            hidePreloader(_element);
+        };
         var showPreloader = function (element) {
             $(element).stop().hide().fadeIn({
                 duration: 300,
@@ -35,16 +46,12 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
             });
         };
         var loadPreview = function (element, url) {
-            $(element).unbind('load').stop().hide().attr('src', url).bind({
-                'load': function (event) {
-                    $(this).unbind('load');
-                    var _element = $("img[for-guid='" + $(this).attr('guid') + "']");
-                    hidePreloader(_element);
-                }
+            $(element).unbind('load', loadEvent).stop().hide().attr('src', url).bind({
+                'load': loadEvent
             });
         };
         var showPreview = function (element) {
-            $(element).unbind('load').stop().hide().fadeIn({
+            $(element).unbind('load', loadEvent).stop().hide().fadeIn({
                 duration: 300,
                 easing: 'swing',
                 complete: function () {
@@ -53,7 +60,7 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
             });
         };
         var hidePreview = function (element) {
-            $(element).unbind('load').stop().show().fadeOut({
+            $(element).unbind('load', loadEvent).stop().show().fadeOut({
                 duration: 300,
                 easing: 'swing',
                 complete: function () {
@@ -69,11 +76,12 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
             if ($(this).is('img')) {
                 _attr = $.trim($(this).attr('guid'));
 
-                if ((typeof _attr !== typeof undefined && _attr !== false) || _attr == '') {
+                if (isNullOrEmpty(_attr)) {
                     $(this).attr('guid', guid());
                 }
                 _guid = $(this).attr('guid');
                 _loader = $("img[for-guid='" + _guid + "']");
+
                 if (_loader.length < 1) {
                     _loader = $(this).clone(true).attr({
                         'src': settings.loader,
@@ -83,9 +91,10 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
                         'for-guid': _guid,
                         'guid': ''
                     }).hide().insertAfter($(this));
-                } else {
-                    _loader = _loader.get(0);
                 }
+                _loader.stop();
+                $(this).unbind('load', loadEvent)
+
                 if ($(this).is(':visible') && $(this).attr('src') != '') {
                     $(_loader).hide();
                     hidePreview($(this));
