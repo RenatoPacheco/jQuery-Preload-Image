@@ -22,7 +22,7 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
             hidePreloader(_element);
         };
         var errorEvent = function (event) {
-            $(this).unbind({ 'load': loadEvent }).attr('src', settings.error);
+            $(this).unbind({ 'error': loadEvent }).attr('src', settings.error);
         };
         var showPreloader = function (element) {
             $(element).stop().hide().fadeIn({
