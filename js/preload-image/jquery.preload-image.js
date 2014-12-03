@@ -77,7 +77,7 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
         settings.error = settings.error.replace('~/', folder);
         return this.each(function () {
             var _attr, _loader, _guid;
-            if ($(this).is('img')) {
+            if ($(this).is('img') && !$(this).is('[for-guid]')) {
                 _attr = $.trim($(this).attr('guid'));
 
                 if (isNullOrEmpty(_attr)) {
