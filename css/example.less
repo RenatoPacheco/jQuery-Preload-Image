@@ -28,8 +28,7 @@ legend {
     font-size:1.5em;
 }
 button {
-    display:block;
-    margin-top:1em;
+    display:inline-block;
     border: 1px solid #000;
     background-color: #eee;
     padding:0.5em;
@@ -40,8 +39,23 @@ button {
     }
 
 }
-p {
+.preview {
     text-align:center;
+
+    a {
+        display:block;
+        position:absolute;
+        background-image:url("../img/icon/trash/32.png");
+        height:32px;
+        width:32px;
+        span {
+            display:none;
+        }
+    }
+}
+
+.model {
+    display:none;
 }
 
 @media (max-width: 990px) { 
