@@ -21,6 +21,7 @@ var AcoesImagem = function (url) {
         } else {
             $('input:text').focus();
         }
+        return false;
     });    
 };
 
