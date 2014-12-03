@@ -6,6 +6,7 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
         var folder = PreloadImage;
         var settings = $.extend({
             loader: "~/img/icon/preloader/64.gif",
+            error: "~/img/icon/picture/64.png",
             width: '',
             height: '',
             url: ''
@@ -16,9 +17,12 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
             return false;
         };
         var loadEvent = function (event) {
-            $(this).unbind('load', loadEvent);
+            $(this).unbind({ 'load': loadEvent, 'error': errorEvent });
             var _element = $("img[for-guid='" + $(this).attr('guid') + "']");
             hidePreloader(_element);
+        };
+        var errorEvent = function (event) {
+            $(this).unbind({ 'error': loadEvent }).attr('src', settings.error);
         };
         var showPreloader = function (element) {
             $(element).stop().hide().fadeIn({
@@ -44,12 +48,13 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
             });
         };
         var loadPreview = function (element, url) {
-            $(element).unbind('load', loadEvent).stop().hide().attr('src', url).bind({
-                'load': loadEvent
+            $(element).unbind({ 'load': loadEvent, 'error': errorEvent }).stop().hide().attr('src', url).bind({
+                'load': loadEvent,
+                'error': errorEvent
             });
         };
         var showPreview = function (element) {
-            $(element).unbind('load', loadEvent).stop().hide().fadeIn({
+            $(element).unbind({ 'load': loadEvent, 'error' : errorEvent }).stop().hide().fadeIn({
                 duration: 300,
                 easing: 'swing',
                 complete: function () {
@@ -58,7 +63,7 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
             });
         };
         var hidePreview = function (element) {
-            $(element).unbind('load', loadEvent).stop().show().fadeOut({
+            $(element).unbind({ 'load': loadEvent, 'error': errorEvent }).stop().show().fadeOut({
                 duration: 300,
                 easing: 'swing',
                 complete: function () {
@@ -69,6 +74,7 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
             });
         };
         settings.loader = settings.loader.replace('~/', folder);
+        settings.error = settings.error.replace('~/', folder);
         return this.each(function () {
             var _attr, _loader, _guid;
             if ($(this).is('img')) {
@@ -91,7 +97,7 @@ var PreloadImage = (function () { var file, folder; try { file = (function () { 
                     }).hide().insertAfter($(this));
                 }
                 _loader.stop();
-                $(this).unbind('load', loadEvent)
+                $(this).unbind({ 'load': loadEvent, 'error': errorEvent })
 
                 if ($(this).is(':visible') && $(this).attr('src') != '') {
                     $(_loader).hide();
